@@ -20,6 +20,22 @@ MonoBehaviour:
   passIndex: 0
   bindDepthStencilAttachment: 0
   m_Version: 1
+--- !u!114 &-241966117590108812
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 017db9482a765ac46b4cffcd4ff43e79, type: 3}
+  m_Name: ColorTint
+  m_EditorClassIdentifier: Assembly-CSharp::CustomRenderFeature
+  m_Active: 1
+  renderPassEvent: 550
+  material: {fileID: 2100000, guid: 2cac225a002a78f45b3b845cb466562d, type: 2}
+  color: {r: 0.840273, g: 1, b: 0, a: 1}
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -30,7 +46,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: de640fe3d0db1804a85f9fc8f5cadab6, type: 3}
-  m_Name: 3. Renderer_Vignette
+  m_Name: 4. CustomRenderPass_ColorTint_Renderer
   m_EditorClassIdentifier: 
   debugShaders:
     debugReplacementPS: {fileID: 4800000, guid: cf852408f2e174538bcd9b7fda1c5ae7, type: 3}
@@ -47,7 +63,8 @@ MonoBehaviour:
   m_RendererFeatures:
   - {fileID: 7833122117494664109}
   - {fileID: -430893244012985423}
-  m_RendererFeatureMap: ad6b866f10d7b46cb1837da6e02805fa
+  - {fileID: -241966117590108812}
+  m_RendererFeatureMap: ad6b866f10d7b46cb1837da6e02805fa74755c19195da4fc
   m_UseNativeRenderPass: 1
   xrSystemData: {fileID: 0}
   postProcessData: {fileID: 11400000, guid: 41439944d30ece34e96484bdb6645b55, type: 2}
