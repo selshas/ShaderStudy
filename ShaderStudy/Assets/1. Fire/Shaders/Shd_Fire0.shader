@@ -24,7 +24,7 @@ Shader "Custom/1/Fire"
             ZWrite Off
             //Blend One One
             Blend SrcAlpha OneMinusSrcAlpha
-            CULL Off
+            Cull Off
 
             HLSLPROGRAM
 
