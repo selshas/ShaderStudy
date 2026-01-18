@@ -77,7 +77,7 @@ public class CustomBlitRenderFeature : ScriptableRendererFeature
 
     public override void Create()
     {
-        customRenderPass = new CustomBlitRenderPass(renderPassEvent, new Material(material), color);
+        customRenderPass = new CustomBlitRenderPass(renderPassEvent, material, color);
     }
     public override void AddRenderPasses(ScriptableRenderer renderer, ref RenderingData renderingData)
     {
