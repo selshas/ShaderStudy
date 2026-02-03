@@ -13,7 +13,7 @@ public class CustomBlitRenderPass : ScriptableRenderPass
     private class PassData
     {
         public Material material;
-        public TextureHandle cameraTex;
+        public TextureHandle cameraTexureHnd;
     }
 
     public CustomBlitRenderPass(RenderPassEvent renderPassEvent, Material material, Color color)
@@ -42,11 +42,11 @@ public class CustomBlitRenderPass : ScriptableRenderPass
         {
             var frameData = frameContext.Get<UniversalResourceData>();
 
-            passData.cameraTex = frameData.cameraColor;
+            passData.cameraTexureHnd = frameData.cameraOpaqueTexture;
 
             grphBuilder.SetRenderAttachment(srcTex, 0);
             grphBuilder.SetRenderFunc(static (PassData passData, RasterGraphContext context) => {
-                Blitter.BlitTexture(context.cmd, passData.cameraTex, new Vector4(1.0f, 1.0f, 0, 0), 0, true);
+                Blitter.BlitTexture(context.cmd, passData.cameraTexureHnd, new Vector4(1.0f, 1.0f, 0, 0), 0, true);
             });
         }
 
@@ -56,12 +56,12 @@ public class CustomBlitRenderPass : ScriptableRenderPass
 
             passData.material = material;
             material.SetColor(propId_color, color);
-            passData.cameraTex = frameData.cameraColor;
+            passData.cameraTexureHnd = frameData.cameraColor;
 
             grphBuilder.UseTexture(in srcTex);
-            grphBuilder.SetRenderAttachment(passData.cameraTex, 0);
+            grphBuilder.SetRenderAttachment(passData.cameraTexureHnd, 0);
             grphBuilder.SetRenderFunc(static (PassData passData, RasterGraphContext context) => {
-                Blitter.BlitTexture(context.cmd, passData.cameraTex, new Vector4(1.0f, 1.0f, 0, 0), passData.material, 0);
+                Blitter.BlitTexture(context.cmd, passData.cameraTexureHnd, new Vector4(1.0f, 1.0f, 0, 0), passData.material, 0);
             });
         }
     }
