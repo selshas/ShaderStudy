@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-430893244012985423
+--- !u!114 &-3666096928064655623
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -9,33 +9,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b00045f12942b46c698459096c89274e, type: 3}
-  m_Name: Vignette
-  m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.FullScreenPassRendererFeature
+  m_Script: {fileID: 11500000, guid: 8d7b1b6320cabae42ab81761f6c386ed, type: 3}
+  m_Name: EmissionRenderFeature
+  m_EditorClassIdentifier: Assembly-CSharp::EmissionRenderFeature
   m_Active: 1
-  injectionPoint: 600
-  fetchColorBuffer: 1
-  requirements: 0
-  passMaterial: {fileID: 2100000, guid: 77e0e1d2a80c18c4598985e419bc8ad1, type: 2}
-  passIndex: 0
-  bindDepthStencilAttachment: 0
-  m_Version: 1
---- !u!114 &-241966117590108812
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 017db9482a765ac46b4cffcd4ff43e79, type: 3}
-  m_Name: ColorTint
-  m_EditorClassIdentifier: Assembly-CSharp::CustomRenderFeature
-  m_Active: 0
-  renderPassEvent: 550
-  material: {fileID: 2100000, guid: 2cac225a002a78f45b3b845cb466562d, type: 2}
-  color: {r: 0.840273, g: 1, b: 0, a: 1}
+  Material_OverlayBlit: {fileID: 2100000, guid: 91da88135b853d544a9821ac0545b76e, type: 2}
+  Material_ScreenBlit: {fileID: 2100000, guid: 8f405b6b463ddd34986d436ade6867a4, type: 2}
+  Material_TransparentBlit: {fileID: 2100000, guid: 14ac44190529bf44ca3d84dde5cd9abe, type: 2}
+  Material_HBlur: {fileID: 2100000, guid: 18b87c060ad1a834eafc4c5360813bfe, type: 2}
+  Material_VBlur: {fileID: 2100000, guid: 68ac44fda6974b64794218c9617a079d, type: 2}
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -46,7 +28,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: de640fe3d0db1804a85f9fc8f5cadab6, type: 3}
-  m_Name: 4. CustomRenderPass_ColorTint_Renderer
+  m_Name: 5. CustomRenderPass_EmissionPass_Renderer
   m_EditorClassIdentifier: 
   debugShaders:
     debugReplacementPS: {fileID: 4800000, guid: cf852408f2e174538bcd9b7fda1c5ae7, type: 3}
@@ -62,9 +44,8 @@ MonoBehaviour:
     probeVolumeBlendStatesCS: {fileID: 7200000, guid: b9a23f869c4fd45f19c5ada54dd82176, type: 3}
   m_RendererFeatures:
   - {fileID: 7833122117494664109}
-  - {fileID: -430893244012985423}
-  - {fileID: -241966117590108812}
-  m_RendererFeatureMap: ad6b866f10d7b46cb1837da6e02805fa74755c19195da4fc
+  - {fileID: -3666096928064655623}
+  m_RendererFeatureMap: ad6b866f10d7b46cf92e8e8a44681fcd
   m_UseNativeRenderPass: 1
   xrSystemData: {fileID: 0}
   postProcessData: {fileID: 11400000, guid: 41439944d30ece34e96484bdb6645b55, type: 2}
