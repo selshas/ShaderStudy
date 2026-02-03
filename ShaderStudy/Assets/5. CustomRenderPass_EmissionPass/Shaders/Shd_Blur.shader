@@ -61,7 +61,12 @@ Shader "Custom/5/Blur"
 
             float depthToBrightness(float depth)
             {
-                return (1.0 - Linear01Depth(depth, _ZBufferParams) - 0.75) * 4.0;
+                if (unity_OrthoParams.w == 0)
+                {
+                    return (1.0 - Linear01Depth(depth, _ZBufferParams) - 0.75) * 4.0;
+                }
+
+                return depth;
             }
 
             half4 frag(Varyings IN) : SV_Target
@@ -81,7 +86,6 @@ Shader "Custom/5/Blur"
                 for (int i = 1; i < 4; i++)
                 {
                     float2 offset = direction * offsets[i];
-                    //float weight = gaussian(sigma, i);
                     
                     float depth_r = SAMPLE_TEXTURE2D(_EmissionDepthTexture, sampler_EmissionDepthTexture, IN.texcoord + offset).r;
                     float depth_l = SAMPLE_TEXTURE2D(_EmissionDepthTexture, sampler_EmissionDepthTexture, IN.texcoord - offset).r;

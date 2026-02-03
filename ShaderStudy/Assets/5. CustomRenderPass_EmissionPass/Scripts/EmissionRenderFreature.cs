@@ -2,7 +2,6 @@ using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.RenderGraphModule;
 using UnityEngine.Rendering.Universal;
-using static Unity.Burst.Intrinsics.X86.Avx;
 
 public class EmissionRenderFeature : ScriptableRendererFeature
 {
