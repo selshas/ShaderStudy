@@ -13,7 +13,6 @@ MonoBehaviour:
   m_Name: EmissionRenderFeature
   m_EditorClassIdentifier: Assembly-CSharp::EmissionRenderFeature
   m_Active: 1
-  Material_OverlayBlit: {fileID: 2100000, guid: 91da88135b853d544a9821ac0545b76e, type: 2}
   Material_ScreenBlit: {fileID: 2100000, guid: 8f405b6b463ddd34986d436ade6867a4, type: 2}
   Material_TransparentBlit: {fileID: 2100000, guid: 14ac44190529bf44ca3d84dde5cd9abe, type: 2}
   Material_HBlur: {fileID: 2100000, guid: 18b87c060ad1a834eafc4c5360813bfe, type: 2}
