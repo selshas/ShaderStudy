@@ -1,4 +1,4 @@
-Shader "Custom/7/Shd_BokehBlur"
+Shader "Custom/7/BokehBlur"
 {
     Properties
     {
