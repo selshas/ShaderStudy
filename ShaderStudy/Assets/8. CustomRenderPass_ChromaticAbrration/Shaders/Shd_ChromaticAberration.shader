@@ -7,6 +7,7 @@ Shader "Custom/8/ChromaticAberration"
         _Intensity ("Intensity", Range(0, 10)) = 1
         _DepthInfluence ("DepthInfluence", Range(0, 1)) = 0
         [KeywordEnum(Radial, Rotational, X, Y)] _Direction ("Direction", int) = 0
+        [Toggle] _InversedOffset ("InversedOffset", int) = 0
     }
 
     SubShader
@@ -34,6 +35,7 @@ Shader "Custom/8/ChromaticAberration"
                 float _Intensity;
                 float _DepthInfluence;
                 float _Direction;
+                float _InversedOffset;
             CBUFFER_END
 
             half4 frag(Varyings IN) : SV_Target
@@ -81,6 +83,11 @@ Shader "Custom/8/ChromaticAberration"
                 else if (_Direction == 3)
                 {
                     offset = float2(0, _BlitTexture_TexelSize.y) * _Intensity;
+                }
+
+                if (_InversedOffset == 0)
+                {
+                    offset *= -1;    
                 }
                 
                 float r = SAMPLE_TEXTURE2D(_BlitTexture, sampler_BlitTexture, IN.texcoord + offset * mask).r;
