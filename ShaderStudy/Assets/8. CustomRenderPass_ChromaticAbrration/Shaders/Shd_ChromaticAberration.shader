@@ -91,8 +91,8 @@ Shader "Custom/8/ChromaticAberration"
                 }
                 
                 float r = SAMPLE_TEXTURE2D(_BlitTexture, sampler_BlitTexture, IN.texcoord + offset * mask).r;
-                float g = SAMPLE_TEXTURE2D(_BlitTexture, sampler_BlitTexture, IN.texcoord - offset * mask).g;
-                float b = SAMPLE_TEXTURE2D(_BlitTexture, sampler_BlitTexture, IN.texcoord).b;
+                float g = SAMPLE_TEXTURE2D(_BlitTexture, sampler_BlitTexture, IN.texcoord).g;
+                float b = SAMPLE_TEXTURE2D(_BlitTexture, sampler_BlitTexture, IN.texcoord - offset * 1.5 * mask).b;
 
                 return float4(r, g, b, 1.0);
             }
