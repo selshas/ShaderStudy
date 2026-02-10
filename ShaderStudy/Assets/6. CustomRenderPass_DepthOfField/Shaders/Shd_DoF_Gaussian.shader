@@ -1,4 +1,4 @@
-Shader "Custom/6/DepthOfField"
+Shader "Custom/6/DoF_Gaussian"
 {
     Properties
     {

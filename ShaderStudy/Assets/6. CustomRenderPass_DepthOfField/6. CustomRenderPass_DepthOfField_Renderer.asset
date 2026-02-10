@@ -69,9 +69,9 @@ MonoBehaviour:
   m_Name: DepthOfFieldRenderFeature
   m_EditorClassIdentifier: Assembly-CSharp::DepthOfFieldRenderFeature
   m_Active: 1
-  Material_DOFBlit: {fileID: 2100000, guid: 3a8f96efa5179e4499c340358fdca90e, type: 2}
-  FocalRadius: 10
-  FocusDistance: 8
+  Material_DOFBlit: {fileID: 2100000, guid: 2e70c373c149fd743afe51d9fa7dbedd, type: 2}
+  FocalRange: 2.07
+  FocusDistance: 7
 --- !u!114 &7833122117494664109
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -19,13 +19,17 @@ public class DepthOfFieldRenderFeature : ScriptableRendererFeature
             public TextureHandle SrcDepthTextureHnd;
             public TextureHandle DstTextureHnd;
 
+            public float BlurIntensity;
             public float FocalRange;
             public float FocalDistance;
+            public bool ToggleCoCVisualization;
         }
 
         public Material Material_DOFBlit;
+        public float BlurIntensity;
         public float FocalRange;
         public float FocalDistance;
+        public bool ToggleCoCVisualization;
 
         private void RecordBlurPass(RenderGraph renderGraph, TextureHandle srcTextureHnd, TextureHandle srcDepthTextureHnd, TextureHandle dstTextureHnd)
         {
@@ -35,8 +39,10 @@ public class DepthOfFieldRenderFeature : ScriptableRendererFeature
                 passData.SrcTextureHnd = srcTextureHnd;
                 passData.SrcDepthTextureHnd = srcDepthTextureHnd;
                 passData.DstTextureHnd = dstTextureHnd;
+                passData.BlurIntensity = BlurIntensity;
                 passData.FocalDistance = FocalDistance;
                 passData.FocalRange = FocalRange;
+                passData.ToggleCoCVisualization = ToggleCoCVisualization;
 
                 grphBuilder.UseTexture(passData.SrcTextureHnd, AccessFlags.ReadWrite);
                 grphBuilder.UseTexture(passData.SrcDepthTextureHnd);
@@ -44,8 +50,10 @@ public class DepthOfFieldRenderFeature : ScriptableRendererFeature
                 grphBuilder.SetRenderFunc<BlitPassData>(static (passData, context) =>
                 {
                     passData.Material.SetTexture("_DepthTexture", passData.SrcDepthTextureHnd);
+                    passData.Material.SetFloat("_BlurIntensity", passData.BlurIntensity);
                     passData.Material.SetFloat("_FocalDistance", passData.FocalDistance);
                     passData.Material.SetFloat("_FocalRange", passData.FocalRange);
+                    passData.Material.SetInt("_DbgCOC", passData.ToggleCoCVisualization ? 1 : 0);
                     Blitter.BlitTexture(
                         context.cmd,
                         passData.SrcTextureHnd,
@@ -95,18 +103,23 @@ public class DepthOfFieldRenderFeature : ScriptableRendererFeature
     private RenderPass renderPass;
 
     public Material Material_DOFBlit;
-    [Range(0, 10)]
+    [Range(0, 1)]
+    public float BlurIntensity = 0.1f;
+    [Range(0, 100)]
     public float FocalRange = 10f;
-    [Range(0, 50)]
+    [Range(0, 100)]
     public float FocusDistance = 10f;
+    public bool ToggleCoCVisualization = false;
 
     public override void Create()
     {
         renderPass = new RenderPass() {
             renderPassEvent = RenderPassEvent.BeforeRenderingPostProcessing,
             Material_DOFBlit = Material_DOFBlit,
+            BlurIntensity = BlurIntensity,
             FocalDistance = FocusDistance,
             FocalRange = FocalRange,
+            ToggleCoCVisualization = ToggleCoCVisualization,
         };
     }
 
