@@ -101,8 +101,8 @@ Material:
     - _DstBlend: 0
     - _DstBlendAlpha: 0
     - _EnvironmentReflections: 1
-    - _FocalDistance: 12.4
-    - _FocalRange: 10
+    - _FocalDistance: 0
+    - _FocalRange: 5.24
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
