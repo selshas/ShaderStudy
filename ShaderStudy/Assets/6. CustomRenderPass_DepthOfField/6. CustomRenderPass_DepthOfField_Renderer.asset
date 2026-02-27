@@ -72,8 +72,8 @@ MonoBehaviour:
   Material_DOFBlit: {fileID: 2100000, guid: 2e70c373c149fd743afe51d9fa7dbedd, type: 2}
   BlurIntensity: 1
   FocalRange: 100
-  FocusDistance: 100
-  ToggleCOCVisualization: 0
+  FocusDistance: 4.1
+  DisplayMode: 0
   EnablePostFilter: 1
 --- !u!114 &7833122117494664109
 MonoBehaviour:
