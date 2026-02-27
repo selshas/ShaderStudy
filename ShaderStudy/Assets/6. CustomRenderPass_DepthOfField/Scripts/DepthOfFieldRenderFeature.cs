@@ -19,8 +19,6 @@ public class DepthOfFieldRenderFeature : ScriptableRendererFeature
 
             public TextureHandle CamColorTextureHnd;
             public TextureHandle CamDepthTextureHnd;
-            public TextureHandle DstBGTextureHnd;
-            public TextureHandle DstFGTextureHnd;
 
             public float BlurIntensity;
             public float FocalRange;
@@ -51,40 +49,6 @@ public class DepthOfFieldRenderFeature : ScriptableRendererFeature
             var cameraData = frameData.Get<UniversalCameraData>();
 
             var camColorDesc = resourceData.cameraColor.GetDescriptor(renderGraph);
-
-            var cameraGrabTextureHnd = UniversalRenderer.CreateRenderGraphTexture(
-                renderGraph,
-                new RenderTextureDescriptor(camColorDesc.width, camColorDesc.height, RenderTextureFormat.ARGBHalf), "CameraGrab",
-                false,
-                FilterMode.Bilinear, TextureWrapMode.Clamp
-            );
-
-            var blurredTextureHnd = UniversalRenderer.CreateRenderGraphTexture(
-                renderGraph,
-                new RenderTextureDescriptor(camColorDesc.width / 2, camColorDesc.height / 2, RenderTextureFormat.ARGBHalf), "Result",
-                false,
-                FilterMode.Bilinear, TextureWrapMode.Clamp
-            );
-
-            using (var grphBuilder = renderGraph.AddRasterRenderPass<GrabPassData>("DoF - CameraGrab", out var passData))
-            {
-                passData.SrcTextureHnd = resourceData.cameraColor;
-                passData.DstTextureHnd = cameraGrabTextureHnd;
-                passData.Material = Material_DOFBlit;
-
-                grphBuilder.UseTexture(passData.SrcTextureHnd);
-                grphBuilder.SetRenderAttachment(cameraGrabTextureHnd, 0);
-                grphBuilder.SetRenderFunc<GrabPassData>((passData, context) =>
-                {
-                    Blitter.BlitTexture(
-                        context.cmd,
-                        passData.SrcTextureHnd,
-                        new Vector4(1, 1, 0, 0),
-                        passData.Material, 0
-                    );
-                });
-            }
-
 
             var bgTextureHnd = UniversalRenderer.CreateRenderGraphTexture(
                 renderGraph,
@@ -194,6 +158,13 @@ public class DepthOfFieldRenderFeature : ScriptableRendererFeature
 
     public override void AddRenderPasses(ScriptableRenderer renderer, ref RenderingData renderingData)
     {
+        renderPass.renderPassEvent = RenderPassEvent.BeforeRenderingPostProcessing;
+        renderPass.Material_DOFBlit = Material_DOFBlit;
+        renderPass.BlurIntensity = BlurIntensity;
+        renderPass.FocalDistance = FocusDistance;
+        renderPass.FocalRange = FocalRange;
+        renderPass.DisplayMode = DisplayMode;
+        renderPass.EnablePostFilter = EnablePostFilter;
         renderer.EnqueuePass(renderPass);
     }
 }

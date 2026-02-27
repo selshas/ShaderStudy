@@ -112,7 +112,6 @@ Shader "Custom/6/DoF_Bokeh"
                 SeparatedSample center = GETBOKEHSAMPLE(_BlitTexture, _CameraDepthTexture, uv);
                 float center_blurSize = abs(center.coc) * _BlurIntensity * MAXRADIUS;
                 
-
                 float bg_totalWeight = 1.0;
                 float fg_totalWeight = 1.0;
                 for (int i = 1; i < SAMPLE_COUNT; i++)
@@ -124,8 +123,8 @@ Shader "Custom/6/DoF_Bokeh"
                     SeparatedSample sample = GETBOKEHSAMPLE(_BlitTexture, _CameraDepthTexture, uv + offset);
                     
                     float sample_blurSize = abs(sample.coc) * _BlurIntensity * MAXRADIUS;
-                    float bg_weight = saturate(((min(center_blurSize, sample_blurSize) - radius) + 2) * 0.5);
-                    float fg_weight = saturate(((sample_blurSize - radius) + 2) * 0.5);
+                    float bg_weight = saturate(((min(center_blurSize, sample_blurSize) - radius) + 1));
+                    float fg_weight = saturate(((sample_blurSize - radius) + 1));
 
                     center.bg_color += sample.bg_color * bg_weight;
                     center.fg_color += sample.fg_color * fg_weight;
