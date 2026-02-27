@@ -13,18 +13,6 @@ public class DepthOfFieldRenderFeature : ScriptableRendererFeature
             public TextureHandle SrcTextureHnd;
             public TextureHandle DstTextureHnd;
         }
-        private class BlitPassData
-        {
-            public Material Material;
-            public TextureHandle SrcTextureHnd;
-            public TextureHandle SrcDepthTextureHnd;
-            public TextureHandle DstTextureHnd;
-
-            public float BlurIntensity;
-            public float FocalRange;
-            public float FocalDistance;
-            public DOFDisplayMode DisplayMode;
-        }
         private class SeparatedBlurPassData
         {
             public Material Material;
@@ -41,23 +29,14 @@ public class DepthOfFieldRenderFeature : ScriptableRendererFeature
         private class CompositePassData
         {
             public Material Material;
-            public TextureHandle SharpTextureHnd;
-            public TextureHandle BlurredTextureHnd;
-            public TextureHandle DstTextureHnd;
-
-            public float FocalDistance;
-            public float FocalRange;
-            public bool EnablePostFilter;
-            public DOFDisplayMode DisplayMode;
-        }
-        private class CompositePassData2
-        {
-            public Material Material;
             public TextureHandle FGTextureHnd;
             public TextureHandle BGTextureHnd;
             
+            public bool EnablePostFilter;
+
             public DOFDisplayMode DisplayMode;
         }
+
 
         public Material Material_DOFBlit;
         public float BlurIntensity;
@@ -65,72 +44,6 @@ public class DepthOfFieldRenderFeature : ScriptableRendererFeature
         public float FocalDistance;
         public DOFDisplayMode DisplayMode;
         public bool EnablePostFilter;
-
-        private void RecordBlurPass(RenderGraph renderGraph, TextureHandle srcTextureHnd, TextureHandle srcDepthTextureHnd, TextureHandle dstTextureHnd)
-        {
-            using (var grphBuilder = renderGraph.AddRasterRenderPass<BlitPassData>("DoF - ApplyingBlit", out var passData))
-            {
-                passData.Material = Material_DOFBlit;
-                passData.SrcTextureHnd = srcTextureHnd;
-                passData.SrcDepthTextureHnd = srcDepthTextureHnd;
-                passData.DstTextureHnd = dstTextureHnd;
-                passData.BlurIntensity = BlurIntensity;
-                passData.FocalDistance = FocalDistance;
-                passData.FocalRange = FocalRange;
-                passData.DisplayMode = DisplayMode;
-
-                grphBuilder.UseTexture(passData.SrcTextureHnd, AccessFlags.ReadWrite);
-                grphBuilder.UseTexture(passData.SrcDepthTextureHnd);
-                grphBuilder.SetRenderAttachment(passData.DstTextureHnd, 0);
-                grphBuilder.SetRenderFunc<BlitPassData>(static (passData, context) =>
-                {
-                    passData.Material.SetTexture("_DepthTexture", passData.SrcDepthTextureHnd);
-                    passData.Material.SetFloat("_BlurIntensity", passData.BlurIntensity);
-                    passData.Material.SetFloat("_FocalDistance", passData.FocalDistance);
-                    passData.Material.SetFloat("_FocalRange", passData.FocalRange);
-                    passData.Material.SetInt("_DbgDisplayMode", (int)passData.DisplayMode);
-                    Blitter.BlitTexture(
-                        context.cmd,
-                        passData.SrcTextureHnd,
-                        new Vector4(1, 1, 0, 0),
-                        passData.Material, 1
-                    );
-                });
-            }
-        }
-        private void RecordCompositePass(RenderGraph renderGraph, TextureHandle sharpTextureHnd, TextureHandle blurredTextureHnd, TextureHandle dstTextureHnd)
-        {
-            using (var grphBuilder = renderGraph.AddRasterRenderPass<CompositePassData>("DoF - Composition", out var passData))
-            {
-                passData.SharpTextureHnd = sharpTextureHnd;
-                passData.BlurredTextureHnd = blurredTextureHnd;
-                passData.DstTextureHnd = dstTextureHnd;
-                passData.Material = Material_DOFBlit;
-                passData.FocalDistance = FocalDistance;
-                passData.FocalRange = FocalRange;
-                passData.EnablePostFilter = EnablePostFilter;
-                passData.DisplayMode = DisplayMode;
-
-                grphBuilder.UseTexture(passData.SharpTextureHnd);
-                grphBuilder.UseTexture(passData.BlurredTextureHnd);
-                grphBuilder.SetRenderAttachment(passData.DstTextureHnd, 0);
-                grphBuilder.SetRenderFunc<CompositePassData>((passData, context) =>
-                {
-                    passData.Material.SetTexture("_BlurredTexture", passData.BlurredTextureHnd);
-                    passData.Material.SetFloat("_FocalDistance", passData.FocalDistance);
-                    passData.Material.SetFloat("_FocalRange", passData.FocalRange);
-                    passData.Material.SetInt("_EnablePostFilter", passData.EnablePostFilter ? 1 : 0);
-                    passData.Material.SetInt("_DbgDisplayMode", (int)passData.DisplayMode);
-
-                    Blitter.BlitTexture(
-                        context.cmd,
-                        passData.SharpTextureHnd,
-                        new Vector4(1, 1, 0, 0),
-                        passData.Material, 2
-                    );
-                });
-            }
-        }
 
         public override void RecordRenderGraph(RenderGraph renderGraph, ContextContainer frameData)
         {
@@ -141,14 +54,14 @@ public class DepthOfFieldRenderFeature : ScriptableRendererFeature
 
             var cameraGrabTextureHnd = UniversalRenderer.CreateRenderGraphTexture(
                 renderGraph,
-                new RenderTextureDescriptor(camColorDesc.width, camColorDesc.height, RenderTextureFormat.DefaultHDR), "CameraGrab",
+                new RenderTextureDescriptor(camColorDesc.width, camColorDesc.height, RenderTextureFormat.ARGBHalf), "CameraGrab",
                 false,
                 FilterMode.Bilinear, TextureWrapMode.Clamp
             );
 
             var blurredTextureHnd = UniversalRenderer.CreateRenderGraphTexture(
                 renderGraph,
-                new RenderTextureDescriptor(camColorDesc.width / 2, camColorDesc.height / 2, RenderTextureFormat.DefaultHDR), "Result",
+                new RenderTextureDescriptor(camColorDesc.width / 2, camColorDesc.height / 2, RenderTextureFormat.ARGBHalf), "Result",
                 false,
                 FilterMode.Bilinear, TextureWrapMode.Clamp
             );
@@ -210,40 +123,39 @@ public class DepthOfFieldRenderFeature : ScriptableRendererFeature
                         context.cmd,
                         passData.CamColorTextureHnd,
                         new Vector4(1, 1, 0, 0),
-                        passData.Material, 3
+                        passData.Material, 1
                     );
                 });
 
                 grphBuilder.AllowPassCulling(false);
             }
 
-            using (var grphBuilder = renderGraph.AddRasterRenderPass<CompositePassData2>("DoF - Composition", out var passData))
+            using (var grphBuilder = renderGraph.AddRasterRenderPass<CompositePassData>("DoF - Composition", out var passData))
             {
                 passData.FGTextureHnd = fgTextureHnd;
                 passData.BGTextureHnd = bgTextureHnd;
                 passData.DisplayMode = DisplayMode;
+                passData.EnablePostFilter = EnablePostFilter;
 
                 passData.Material = Material_DOFBlit;
 
                 grphBuilder.UseTexture(passData.FGTextureHnd);
                 grphBuilder.UseTexture(passData.BGTextureHnd);
                 grphBuilder.SetRenderAttachment(resourceData.cameraColor, 0);
-                grphBuilder.SetRenderFunc<CompositePassData2>((passData, context) =>
+                grphBuilder.SetRenderFunc<CompositePassData>((passData, context) =>
                 {
                     passData.Material.SetTexture("_FGTexture", passData.FGTextureHnd);
                     passData.Material.SetTexture("_BGTexture", passData.BGTextureHnd);
                     passData.Material.SetInt("_DbgDisplayMode", (int)passData.DisplayMode);
+                    passData.Material.SetInt("_EnablePostFilter", passData.EnablePostFilter ? 1 : 0);
 
                     Blitter.BlitTexture(
                         context.cmd,
                         new Vector4(1, 1, 0, 0),
-                        passData.Material, 4
+                        passData.Material, 2
                     );
                 });
             }
-
-            //RecordBlurPass(renderGraph, cameraGrabTextureHnd, resourceData.activeDepthTexture, blurredTextureHnd);
-            //RecordCompositePass(renderGraph, cameraGrabTextureHnd, blurredTextureHnd, resourceData.cameraColor);
         }
     }
 
